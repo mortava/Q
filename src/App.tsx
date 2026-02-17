@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { Menu, Zap } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import WelcomeScreen from './components/WelcomeScreen'
 import ChatMessage from './components/ChatMessage'
@@ -26,42 +27,30 @@ export default function App() {
 
   const activeConversation = conversations.find((c) => c.id === activeId) || null
 
-  // Load conversations on mount
   useEffect(() => {
     const loaded = loadConversations()
     setConversations(loaded)
   }, [])
 
-  // Save conversations on change
   useEffect(() => {
     if (conversations.length > 0) {
       saveConversations(conversations)
     }
   }, [conversations])
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [activeConversation?.messages])
 
-  // Responsive sidebar
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) setSidebarOpen(false)
+      else setSidebarOpen(true)
     }
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
-
-  const updateConversation = useCallback(
-    (id: string, updater: (c: Conversation) => Conversation) => {
-      setConversations((prev) =>
-        prev.map((c) => (c.id === id ? updater(c) : c))
-      )
-    },
-    []
-  )
 
   const handleNewChat = () => {
     const newConvo = createConversation()
@@ -77,7 +66,6 @@ export default function App() {
     let convoId = activeId
     let currentConversations = conversations
 
-    // Create new conversation if none active
     if (!convoId) {
       const newConvo = createConversation()
       newConvo.title = generateTitle(text)
@@ -87,7 +75,6 @@ export default function App() {
       setActiveId(convoId)
     }
 
-    // Add user message
     const userMsg = createMessage('user', text)
     const assistantMsg = createMessage('assistant', '')
 
@@ -114,7 +101,6 @@ export default function App() {
     const abort = new AbortController()
     abortRef.current = abort
 
-    // Get all messages for context (including the new user message)
     const convo = currentConversations.find((c) => c.id === targetId)
     const allMessages = [...(convo?.messages || []), userMsg]
 
@@ -150,10 +136,7 @@ export default function App() {
             const msgs = [...c.messages]
             const lastMsg = msgs[msgs.length - 1]
             if (lastMsg && lastMsg.role === 'assistant') {
-              msgs[msgs.length - 1] = {
-                ...lastMsg,
-                content: errorContent,
-              }
+              msgs[msgs.length - 1] = { ...lastMsg, content: errorContent }
             }
             return { ...c, messages: msgs }
           })
@@ -182,7 +165,6 @@ export default function App() {
 
   return (
     <div className="h-full flex">
-      {/* Sidebar */}
       <Sidebar
         conversations={conversations}
         activeId={activeId}
@@ -193,32 +175,82 @@ export default function App() {
         onDeleteConversation={handleDeleteConversation}
       />
 
-      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0 h-full">
-        {/* Header */}
-        <div className="h-14 flex items-center px-6 border-b border-slate-200 bg-white shrink-0">
-          <div className="flex items-center gap-2">
+        {/* Header Bar */}
+        <div
+          className="h-14 flex items-center px-4 md:px-6 shrink-0"
+          style={{
+            background: 'var(--bg-primary)',
+            borderBottom: '1px solid var(--border-light)',
+          }}
+        >
+          {/* Sidebar toggle (visible when sidebar is closed) */}
+          {!sidebarOpen && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg mr-3 cursor-pointer md:mr-4"
+              style={{
+                color: 'var(--text-secondary)',
+                transition: 'var(--transition-fast)',
+              }}
+              title="Open sidebar"
+            >
+              <Menu size={20} />
+            </button>
+          )}
+
+          {/* Q avatar + title */}
+          <div className="flex items-center gap-2.5">
             <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold text-xs"
-              style={{ backgroundColor: 'var(--accent)' }}
+              className="w-8 h-8 flex items-center justify-center text-white font-bold text-xs"
+              style={{
+                background: 'linear-gradient(135deg, #007BE0, #0062B3)',
+                borderRadius: 'var(--radius-sm)',
+              }}
             >
               Q
             </div>
-            <span className="font-semibold text-slate-800 text-sm">
+            <span
+              className="font-semibold text-sm truncate max-w-[200px] md:max-w-[400px]"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {activeConversation?.title || 'Q'}
             </span>
           </div>
-          <div className="ml-auto text-xs text-slate-400">
-            Groq llama-3.3-70b
+
+          {/* Model badge */}
+          <div className="ml-auto">
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs"
+              style={{
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-light)',
+                color: 'var(--text-tertiary)',
+              }}
+            >
+              <Zap size={12} />
+              <span>Groq Llama 3.3 70B</span>
+            </div>
           </div>
         </div>
 
-        {/* Messages or Welcome */}
+        {/* Chat Area */}
         {!activeConversation || activeConversation.messages.length === 0 ? (
-          <WelcomeScreen onPromptClick={handlePromptClick} />
+          <div
+            className="flex-1 flex flex-col"
+            style={{ background: 'var(--bg-chat)' }}
+          >
+            <WelcomeScreen onPromptClick={handlePromptClick} />
+          </div>
         ) : (
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-3xl mx-auto px-6 py-6">
+          <div
+            className="flex-1 overflow-y-auto chat-scroll chat-fade-top"
+            style={{
+              background: 'var(--bg-chat)',
+              scrollBehavior: 'smooth',
+            }}
+          >
+            <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
               {activeConversation.messages.map((msg, i) => (
                 <ChatMessage
                   key={msg.id}
@@ -235,7 +267,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Input */}
         <ChatInput
           value={input}
           onChange={setInput}
