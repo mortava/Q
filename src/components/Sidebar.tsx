@@ -1,4 +1,5 @@
-import { Plus, MessageSquare, Trash2, PanelLeftClose, Menu, Settings } from 'lucide-react'
+import { Plus, MessageSquare, Trash2, ChevronLeft, Settings } from 'lucide-react'
+import { useEffect } from 'react'
 import type { Conversation } from '../lib/store'
 
 interface SidebarProps {
@@ -20,6 +21,17 @@ export default function Sidebar({
   onSelectConversation,
   onDeleteConversation,
 }: SidebarProps) {
+  // Close sidebar on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onToggle()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onToggle])
+
   const formatDate = (ts: number) => {
     const d = new Date(ts)
     const now = new Date()
@@ -41,30 +53,14 @@ export default function Sidebar({
     grouped[label].push(c)
   }
 
-  if (!isOpen) {
-    return (
-      <button
-        onClick={onToggle}
-        className="fixed top-4 left-4 z-50 p-2.5 rounded-[var(--radius-sm)] cursor-pointer"
-        style={{
-          background: 'var(--bg-primary)',
-          border: '1px solid var(--border-light)',
-          color: 'var(--text-secondary)',
-          boxShadow: 'var(--shadow-sm)',
-          transition: 'var(--transition-fast)',
-        }}
-        title="Open sidebar"
-      >
-        <Menu size={20} />
-      </button>
-    )
-  }
+  if (!isOpen) return null
 
   return (
     <>
       {/* Mobile backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+        className="fixed inset-0 z-40 md:hidden"
+        style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)' }}
         onClick={onToggle}
       />
 
@@ -72,36 +68,54 @@ export default function Sidebar({
         className="w-[280px] h-full flex flex-col shrink-0 z-50 fixed md:relative"
         style={{
           backgroundColor: 'var(--sidebar-bg)',
-          transition: 'width var(--transition-slow)',
+          willChange: 'transform',
         }}
       >
-        {/* Header */}
+        {/* Logo Area */}
         <div
-          className="flex items-center justify-between px-4 py-4"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          className="flex items-center justify-between"
+          style={{
+            height: '60px',
+            padding: '16px 16px 12px 16px',
+          }}
         >
           <div className="flex items-center gap-2.5">
             <div
-              className="w-10 h-10 flex items-center justify-center text-white font-bold text-base"
+              className="flex items-center justify-center text-white font-bold"
               style={{
-                background: 'linear-gradient(135deg, #007BE0, #0062B3)',
-                borderRadius: 'var(--radius-md)',
+                width: '32px',
+                height: '32px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, #0071E3 0%, #4682B4 100%)',
+                fontSize: '13px',
               }}
             >
               Q
             </div>
-            <span className="font-semibold text-white text-base">Q Agent</span>
+            <span
+              className="text-white"
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Q Agent
+            </span>
           </div>
           <button
             onClick={onToggle}
-            className="p-1.5 rounded-lg cursor-pointer"
+            className="flex items-center justify-center cursor-pointer"
             style={{
+              width: '20px',
+              height: '20px',
+              borderRadius: 'var(--radius-xs)',
               color: 'var(--sidebar-text)',
-              transition: 'var(--transition-fast)',
+              transition: 'background var(--duration-fast) var(--ease-in-out), color var(--duration-fast)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--sidebar-hover)'
-              e.currentTarget.style.color = 'var(--sidebar-text-active)'
+              e.currentTarget.style.color = 'var(--sidebar-text-hover)'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
@@ -109,38 +123,64 @@ export default function Sidebar({
             }}
             title="Close sidebar"
           >
-            <PanelLeftClose size={18} />
+            <ChevronLeft size={16} />
           </button>
         </div>
 
-        {/* New Chat */}
-        <div className="px-3 py-3">
+        {/* New Chat Button */}
+        <div style={{ padding: '0 16px', marginBottom: '16px' }}>
           <button
             onClick={onNewChat}
-            className="w-full flex items-center gap-2 px-3 h-11 rounded-lg text-sm text-white cursor-pointer"
+            className="w-full flex items-center justify-center cursor-pointer"
             style={{
-              border: '1px solid rgba(255,255,255,0.1)',
-              transition: 'var(--transition-fast)',
+              height: '40px',
+              background: 'transparent',
+              border: '1px solid var(--sidebar-divider)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--sidebar-text-hover)',
+              fontSize: '13px',
+              fontWeight: 500,
+              gap: '8px',
+              transition: 'background var(--duration-fast) var(--ease-in-out), border-color var(--duration-fast), color var(--duration-fast)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--sidebar-hover)'
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+              e.currentTarget.style.color = 'white'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.borderColor = 'var(--sidebar-divider)'
+              e.currentTarget.style.color = 'var(--sidebar-text-hover)'
             }}
           >
-            <Plus size={16} />
+            <Plus size={14} />
             New Chat
           </button>
         </div>
 
-        {/* Conversations */}
-        <div className="flex-1 overflow-y-auto px-3 pb-3">
+        {/* Divider */}
+        <div
+          style={{
+            height: '1px',
+            background: 'var(--sidebar-divider)',
+            margin: '0 16px 12px 16px',
+          }}
+        />
+
+        {/* Chat History */}
+        <div className="flex-1 overflow-y-auto chat-scroll">
           {Object.entries(grouped).map(([dateLabel, convos]) => (
-            <div key={dateLabel} className="mb-4">
+            <div key={dateLabel}>
               <div
-                className="text-[11px] font-semibold px-2 mb-2 uppercase tracking-wider"
-                style={{ color: 'var(--sidebar-text)' }}
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  color: 'var(--sidebar-text)',
+                  padding: '8px 16px 6px 16px',
+                }}
               >
                 {dateLabel}
               </div>
@@ -149,36 +189,49 @@ export default function Sidebar({
                 return (
                   <div
                     key={c.id}
-                    className="group flex items-center gap-2 px-3 py-2.5 rounded-lg cursor-pointer text-sm"
+                    className="group flex items-center cursor-pointer"
                     style={{
+                      padding: '7px 12px',
+                      margin: '1px 8px',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '13px',
+                      color: isActive ? 'white' : 'var(--sidebar-text-hover)',
                       background: isActive ? 'var(--sidebar-active)' : 'transparent',
-                      color: isActive ? 'var(--sidebar-text-active)' : 'var(--sidebar-text)',
-                      borderLeft: isActive ? '2px solid var(--tql-blue)' : '2px solid transparent',
-                      transition: 'var(--transition-fast)',
+                      borderLeft: isActive ? '2px solid var(--sidebar-active-border)' : '2px solid transparent',
+                      transition: 'background var(--duration-fast) var(--ease-in-out), color var(--duration-fast)',
                     }}
                     onClick={() => onSelectConversation(c.id)}
                     onMouseEnter={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.background = 'var(--sidebar-hover)'
-                        e.currentTarget.style.color = 'var(--sidebar-text-active)'
+                        e.currentTarget.style.color = 'white'
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.background = 'transparent'
-                        e.currentTarget.style.color = 'var(--sidebar-text)'
+                        e.currentTarget.style.color = 'var(--sidebar-text-hover)'
                       }
                     }}
                   >
-                    <MessageSquare size={14} className="shrink-0 opacity-60" />
+                    <MessageSquare
+                      size={14}
+                      className="shrink-0"
+                      style={{ color: 'var(--sidebar-text)', marginRight: '8px' }}
+                    />
                     <span className="flex-1 truncate">{c.title}</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
                         onDeleteConversation(c.id)
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1 rounded cursor-pointer"
-                      style={{ transition: 'var(--transition-fast)' }}
+                      className="opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer"
+                      style={{
+                        padding: '4px',
+                        borderRadius: 'var(--radius-xs)',
+                        color: 'var(--sidebar-text)',
+                        transition: 'opacity var(--duration-fast), color var(--duration-fast)',
+                      }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.color = '#f87171'
                       }}
@@ -196,25 +249,45 @@ export default function Sidebar({
           ))}
         </div>
 
-        {/* Footer */}
+        {/* Bottom Section */}
         <div
-          className="px-4 py-3 flex items-center justify-between"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          style={{
+            borderTop: '1px solid var(--sidebar-divider)',
+          }}
         >
-          <div>
-            <div className="text-[11px]" style={{ color: 'var(--sidebar-text)' }}>
-              Powered by{' '}
-              <span style={{ color: 'rgba(255,255,255,0.5)' }}>Total Quality Lending</span>
+          <div style={{ padding: '12px 16px' }}>
+            <div
+              style={{
+                fontSize: '11px',
+                color: 'var(--sidebar-text)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              Powered by Total Quality Lending
             </div>
-            <div className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>
+            <div
+              style={{
+                fontSize: '10px',
+                color: 'var(--sidebar-text)',
+                opacity: 0.6,
+                marginTop: '2px',
+              }}
+            >
               NMLS #1933377
             </div>
           </div>
           <button
-            className="p-1.5 rounded-lg cursor-pointer"
-            style={{ color: 'var(--sidebar-text)', transition: 'var(--transition-fast)' }}
+            className="flex items-center justify-center cursor-pointer"
+            style={{
+              position: 'absolute',
+              bottom: '12px',
+              right: '16px',
+              padding: '8px',
+              color: 'var(--sidebar-text)',
+              transition: 'color var(--duration-fast)',
+            }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--sidebar-text-active)'
+              e.currentTarget.style.color = 'white'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = 'var(--sidebar-text)'

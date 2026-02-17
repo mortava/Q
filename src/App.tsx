@@ -176,11 +176,15 @@ export default function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full">
-        {/* Header Bar */}
+        {/* Header Bar — frosted glass */}
         <div
-          className="h-14 flex items-center px-4 md:px-6 shrink-0"
+          className="flex items-center shrink-0"
           style={{
-            background: 'var(--bg-primary)',
+            height: '52px',
+            padding: '0 20px',
+            background: 'rgba(250, 250, 250, 0.82)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
             borderBottom: '1px solid var(--border-light)',
           }}
         >
@@ -188,31 +192,51 @@ export default function App() {
           {!sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-lg mr-3 cursor-pointer md:mr-4"
+              className="flex items-center justify-center cursor-pointer mr-3"
               style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: 'var(--radius-sm)',
                 color: 'var(--text-secondary)',
-                transition: 'var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--bg-hover)'
+                e.currentTarget.style.color = 'var(--text-primary)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.color = 'var(--text-secondary)'
               }}
               title="Open sidebar"
             >
-              <Menu size={20} />
+              <Menu size={18} />
             </button>
           )}
 
           {/* Q avatar + title */}
           <div className="flex items-center gap-2.5">
             <div
-              className="w-8 h-8 flex items-center justify-center text-white font-bold text-xs"
+              className="flex items-center justify-center text-white font-bold"
               style={{
-                background: 'linear-gradient(135deg, #007BE0, #0062B3)',
+                width: '28px',
+                height: '28px',
+                fontSize: '11px',
+                background: 'linear-gradient(135deg, #0071E3 0%, #4682B4 100%)',
                 borderRadius: 'var(--radius-sm)',
+                boxShadow: '0 0 0 1px rgba(0,0,0,0.04)',
               }}
             >
               Q
             </div>
             <span
-              className="font-semibold text-sm truncate max-w-[200px] md:max-w-[400px]"
-              style={{ color: 'var(--text-primary)' }}
+              className="truncate"
+              style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.01em',
+                maxWidth: '300px',
+              }}
             >
               {activeConversation?.title || 'Q'}
             </span>
@@ -221,14 +245,27 @@ export default function App() {
           {/* Model badge */}
           <div className="ml-auto">
             <div
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs"
+              className="flex items-center gap-1.5 cursor-default"
               style={{
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-light)',
+                fontSize: '11px',
+                fontWeight: 500,
                 color: 'var(--text-tertiary)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-full)',
+                padding: '3px 10px 3px 8px',
+                letterSpacing: '-0.01em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-strong)'
+                e.currentTarget.style.color = 'var(--text-secondary)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.style.color = 'var(--text-tertiary)'
               }}
             >
-              <Zap size={12} />
+              <Zap size={12} style={{ color: 'var(--tql-gold)' }} />
               <span>Groq Llama 3.3 70B</span>
             </div>
           </div>
@@ -250,7 +287,10 @@ export default function App() {
               scrollBehavior: 'smooth',
             }}
           >
-            <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
+            <div
+              className="mx-auto"
+              style={{ maxWidth: '720px', padding: '32px 24px 24px' }}
+            >
               {activeConversation.messages.map((msg, i) => (
                 <ChatMessage
                   key={msg.id}

@@ -19,6 +19,7 @@ export default function ChatInput({
   disabled,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!isStreaming && textareaRef.current) {
@@ -38,39 +39,49 @@ export default function ChatInput({
     const el = textareaRef.current
     if (!el) return
     el.style.height = 'auto'
-    el.style.height = Math.min(el.scrollHeight, 200) + 'px'
+    el.style.height = Math.min(el.scrollHeight, 180) + 'px'
   }
 
   const hasText = value.trim().length > 0
 
+  const handleFocus = () => {
+    if (wrapperRef.current) {
+      wrapperRef.current.style.borderColor = 'var(--tql-blue)'
+      wrapperRef.current.style.boxShadow = 'var(--shadow-input-focus)'
+    }
+  }
+
+  const handleBlur = (e: React.FocusEvent) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.relatedTarget as Node)) {
+      wrapperRef.current.style.borderColor = 'var(--border)'
+      wrapperRef.current.style.boxShadow = 'var(--shadow-input)'
+    }
+  }
+
   return (
     <div
-      className="shrink-0 p-4"
+      className="shrink-0 relative input-fade"
       style={{
         background: 'var(--bg-primary)',
         borderTop: '1px solid var(--border-light)',
+        padding: '16px 24px 20px',
       }}
     >
-      <div className="max-w-3xl mx-auto">
+      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
         <div
-          className="flex items-end gap-2 px-4 py-3"
+          ref={wrapperRef}
+          className="flex items-end"
           style={{
             background: 'var(--bg-input)',
             borderRadius: 'var(--radius-xl)',
-            border: '1px solid var(--border)',
-            transition: 'var(--transition-fast)',
-            boxShadow: 'var(--shadow-sm)',
+            border: '1.5px solid var(--border)',
+            boxShadow: 'var(--shadow-input)',
+            padding: '10px 14px 10px 20px',
+            gap: '8px',
+            transition: 'border-color var(--duration-fast), box-shadow var(--duration-fast)',
           }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'var(--tql-blue)'
-            e.currentTarget.style.boxShadow = '0 0 0 2px var(--tql-blue-ring)'
-          }}
-          onBlur={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget)) {
-              e.currentTarget.style.borderColor = 'var(--border)'
-              e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
-            }
-          }}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         >
           <textarea
             ref={textareaRef}
@@ -80,20 +91,39 @@ export default function ChatInput({
               adjustHeight()
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Ask Q about TQL loan products..."
+            placeholder="Ask Q anything about TQL loan products..."
             disabled={disabled}
             rows={1}
-            className="flex-1 bg-transparent outline-none resize-none text-[15px] leading-relaxed min-h-[24px] max-h-[200px]"
+            className="flex-1 bg-transparent outline-none resize-none"
             style={{
+              fontSize: '14.5px',
+              lineHeight: '1.5',
               color: 'var(--text-primary)',
+              letterSpacing: '-0.006em',
               fontFamily: 'var(--font-sans)',
+              minHeight: '24px',
+              maxHeight: '180px',
             }}
           />
           {isStreaming ? (
             <button
               onClick={onStop}
-              className="shrink-0 w-9 h-9 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center cursor-pointer"
-              style={{ transition: 'var(--transition-fast)' }}
+              className="shrink-0 flex items-center justify-center cursor-pointer"
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: 'var(--radius-full)',
+                background: '#ef4444',
+                transition: 'background var(--duration-base) var(--ease-out), transform var(--duration-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#dc2626'
+                e.currentTarget.style.transform = 'scale(1.04)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#ef4444'
+                e.currentTarget.style.transform = 'scale(1)'
+              }}
               title="Stop generating"
             >
               <Square size={14} className="text-white" fill="white" />
@@ -102,21 +132,40 @@ export default function ChatInput({
             <button
               onClick={onSend}
               disabled={!hasText || disabled}
-              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="shrink-0 flex items-center justify-center disabled:cursor-not-allowed"
               style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: 'var(--radius-full)',
                 background: hasText ? 'var(--tql-blue)' : 'var(--bg-secondary)',
-                color: hasText ? 'var(--text-on-blue)' : 'var(--text-tertiary)',
-                transition: 'var(--transition-fast)',
+                color: hasText ? 'var(--text-on-blue)' : 'var(--text-quaternary)',
+                cursor: hasText ? 'pointer' : 'default',
+                transition: 'background var(--duration-base) var(--ease-out), color var(--duration-base), transform var(--duration-fast)',
+              }}
+              onMouseEnter={(e) => {
+                if (hasText) {
+                  e.currentTarget.style.background = 'var(--tql-blue-hover)'
+                  e.currentTarget.style.transform = 'scale(1.04)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = hasText ? 'var(--tql-blue)' : 'var(--bg-secondary)'
+                e.currentTarget.style.transform = 'scale(1)'
               }}
               title="Send message"
             >
-              <ArrowUp size={18} />
+              <ArrowUp size={16} strokeWidth={2} />
             </button>
           )}
         </div>
         <p
-          className="text-xs text-center mt-2"
-          style={{ color: 'var(--text-tertiary)' }}
+          className="text-center"
+          style={{
+            marginTop: '10px',
+            fontSize: '11px',
+            color: 'var(--text-quaternary)',
+            letterSpacing: '0.005em',
+          }}
         >
           Q is an AI assistant. Verify important guideline details with your TQL Account Executive.
         </p>
