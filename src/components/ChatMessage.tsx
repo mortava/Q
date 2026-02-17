@@ -1,18 +1,32 @@
 import { Copy, Check } from 'lucide-react'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import type { Message } from '../lib/store'
-import { C1Component } from '@thesysai/genui-sdk'
 import MarkdownRenderer from './MarkdownRenderer'
+
+// Lazy-load C1Component so it doesn't crash the whole app if it fails
+const C1Component = lazy(() =>
+  import('@thesysai/genui-sdk').then((mod) => ({ default: mod.C1Component }))
+)
 
 interface ChatMessageProps {
   message: Message
   isStreaming?: boolean
 }
 
+function C1Wrapper({ content, isStreaming }: { content: string; isStreaming: boolean }) {
+  return (
+    <div className="c1-response-wrapper">
+      <Suspense fallback={<MarkdownRenderer content={content} isStreaming={isStreaming} />}>
+        <C1Component c1Response={content} isStreaming={isStreaming} />
+      </Suspense>
+    </div>
+  )
+}
+
 export default function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
   const [hovered, setHovered] = useState(false)
-  const [c1Error, setC1Error] = useState(false)
+  const [useMarkdown, setUseMarkdown] = useState(false)
   const isUser = message.role === 'user'
 
   const handleCopy = async () => {
@@ -48,10 +62,7 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
       <div className="flex items-start message-enter" style={{ gap: '12px', marginBottom: '24px' }}>
         <div
           className="flex items-center justify-center shrink-0"
-          style={{
-            width: '36px',
-            height: '36px',
-          }}
+          style={{ width: '36px', height: '36px' }}
         >
           <span
             style={{
@@ -70,13 +81,7 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
             <div className="typing-dot" />
             <div className="typing-dot" />
           </div>
-          <div
-            style={{
-              fontSize: '12px',
-              color: 'var(--text-tertiary)',
-              marginTop: '4px',
-            }}
-          >
+          <div style={{ fontSize: '12px', color: 'var(--text-tertiary)', marginTop: '4px' }}>
             Q is thinking...
           </div>
         </div>
@@ -84,23 +89,14 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
     )
   }
 
-  // Render content — try C1Component for generative UI, fallback to Markdown
   const renderContent = () => {
-    if (c1Error) {
+    if (useMarkdown) {
       return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
     }
-
     try {
-      return (
-        <div className="c1-response-wrapper">
-          <C1Component
-            c1Response={message.content}
-            isStreaming={isStreaming ?? false}
-          />
-        </div>
-      )
+      return <C1Wrapper content={message.content} isStreaming={isStreaming ?? false} />
     } catch {
-      setC1Error(true)
+      setUseMarkdown(true)
       return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
     }
   }
@@ -112,13 +108,9 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Q Avatar — transparent, just letter */}
       <div
         className="flex items-center justify-center shrink-0"
-        style={{
-          width: '36px',
-          height: '36px',
-        }}
+        style={{ width: '36px', height: '36px' }}
       >
         <span
           style={{
@@ -132,13 +124,11 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
         </span>
       </div>
 
-      {/* Message — flat, no card */}
       <div className="flex-1 min-w-0 relative" style={{ maxWidth: 'calc(100% - 48px)' }}>
         <div style={{ padding: '4px 0' }}>
           {renderContent()}
         </div>
 
-        {/* Copy button */}
         {!isStreaming && message.content && (
           <button
             onClick={handleCopy}
