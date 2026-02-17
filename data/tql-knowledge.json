@@ -1,0 +1,148 @@
+{
+  "company": {
+    "name": "Total Quality Lending",
+    "legalName": "Total Quality Financial, Inc.",
+    "dba": "Total Quality Lending",
+    "nmls": "1933377",
+    "headquarters": "630 W Carmel Dr, Suite 160, Carmel, IN 46032",
+    "phone": "(800) 304-1925",
+    "email": "CustomerCare@tqlend.com",
+    "website": "https://totalqualitylending.com",
+    "partnerPortal": "https://tqlpartner.totalqualitylending.com",
+    "serviceArea": "45+ states nationwide",
+    "closingTimeline": "Industry-leading 7-day turnaround from submission to closing",
+    "leadership": {
+      "ceo": { "name": "Chris Paliska", "nmls": "1076530" },
+      "coo": { "name": "Becky Frempter", "nmls": "1482084" }
+    },
+    "mission": "Inspiring and equipping everyday Americans to build wealth in order to live life on purpose.",
+    "status": "Equal Housing Lender"
+  },
+  "products": [
+    {
+      "name": "DSCR Loans",
+      "category": "Investment Property",
+      "description": "Debt Service Coverage Ratio investment property financing for real estate investors and agents. Qualify based on property cash flow rather than personal income.",
+      "propertyTypes": "1-4 unit residential, 5-8 unit, 2-8 unit mixed-use properties",
+      "keyFeatures": [
+        "No personal income verification required",
+        "Qualification based on property rental income vs. debt payments",
+        "Available for 1-8 unit residential and mixed-use properties",
+        "Investment property only",
+        "Ideal for real estate investors building portfolios"
+      ]
+    },
+    {
+      "name": "Non-QM Loans",
+      "category": "Alternative Documentation",
+      "description": "Alternative documentation mortgage products for brokers and real estate professionals. Designed for borrowers who don't fit traditional QM guidelines.",
+      "keyFeatures": [
+        "Multiple documentation options",
+        "Alternative income verification methods",
+        "Flexible underwriting guidelines",
+        "One unified guideline set covering all Non-QM nuances"
+      ]
+    },
+    {
+      "name": "Bank Statement Loans",
+      "category": "Alternative Documentation",
+      "description": "Non-QM loans using bank statements for income qualification instead of tax returns. Perfect for self-employed borrowers.",
+      "keyFeatures": [
+        "12 or 24 month bank statements accepted",
+        "Personal or business bank statements",
+        "No tax returns required",
+        "Ideal for self-employed borrowers",
+        "Alternative income documentation"
+      ]
+    },
+    {
+      "name": "Foreign National Loans",
+      "category": "Specialty",
+      "description": "Investment property financing for foreign national borrowers working with real estate professionals.",
+      "keyFeatures": [
+        "Available for foreign national borrowers",
+        "Investment property financing",
+        "Specialized underwriting for international borrowers",
+        "Work with real estate professionals"
+      ]
+    },
+    {
+      "name": "Closed End Seconds",
+      "category": "Second Lien",
+      "description": "Second lien home equity loans. Standard and Alt Doc options available.",
+      "keyFeatures": [
+        "Second lien position",
+        "Home equity financing",
+        "Standard documentation option",
+        "Alternative documentation option"
+      ]
+    },
+    {
+      "name": "Prime Time Loans",
+      "category": "Standard/Alt Doc",
+      "description": "Standard and alternative documentation loan products with competitive rates for real estate transactions.",
+      "keyFeatures": [
+        "Standard documentation option",
+        "Alternative documentation option",
+        "Competitive rates",
+        "Streamlined processing"
+      ]
+    },
+    {
+      "name": "Short-Term Rental Loans",
+      "category": "Investment Property",
+      "description": "Financing for Airbnb and vacation rental investment properties. DSCR-qualified.",
+      "keyFeatures": [
+        "Designed for Airbnb and vacation rentals",
+        "DSCR qualification method",
+        "Investment property financing",
+        "Short-term rental income considered"
+      ]
+    },
+    {
+      "name": "Hybrid Business Purpose Loans",
+      "category": "Business Purpose",
+      "description": "Business purpose loan products for business owners.",
+      "keyFeatures": [
+        "Business purpose lending",
+        "Available for business owners",
+        "Hybrid structure"
+      ]
+    },
+    {
+      "name": "Investment Property Financing",
+      "category": "Investment Property",
+      "description": "Rental property loans for 1-8 unit residential and mixed-use investment properties.",
+      "keyFeatures": [
+        "1-8 unit residential properties",
+        "Mixed-use properties",
+        "Rental income consideration",
+        "Portfolio building support"
+      ]
+    }
+  ],
+  "brokerPartnership": {
+    "applicationProcess": "Complete the TQL Broker Application Form available on the Forms page. TQL reviews submissions and contacts qualified applicants within 2-3 business days.",
+    "benefits": [
+      "Industry-leading 7-day turnaround from submission to closing",
+      "Dedicated account executives",
+      "One set of guidelines, one submission — stop burning efficiency by reworking files twice",
+      "Investor-focused appraisal flow ensures appraisers understand investor loans and unique property types",
+      "Aggressive rate sheets and flexible products designed for broker success",
+      "Scenario desk assistance"
+    ],
+    "submissionPortal": "https://broker-frontend-1094393703267.us-central1.run.app/",
+    "eligibilityTool": "https://tqlai-mortgage-engine-946328829525.us-central1.run.app/",
+    "pricingTool": "https://ob-pricing-app-1094393703267.us-central1.run.app"
+  },
+  "operationalHighlights": [
+    "One unified guideline set covering all Non-QM nuances",
+    "Single submission process",
+    "Investor-focused appraisal procedures",
+    "7-day closing capability",
+    "45+ states coverage",
+    "Dedicated account executives for each broker partner",
+    "Scenario desk for complex loan scenarios"
+  ],
+  "guidelinesEffectiveDate": "July 1, 2025"
+}
