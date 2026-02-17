@@ -44,17 +44,8 @@ export default function ChatInput({
 
   const hasText = value.trim().length > 0
 
-  const handleFocus = () => {
-    if (wrapperRef.current) {
-      wrapperRef.current.style.boxShadow = 'var(--shadow-input-focus)'
-    }
-  }
-
-  const handleBlur = (e: React.FocusEvent) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.relatedTarget as Node)) {
-      wrapperRef.current.style.boxShadow = 'var(--shadow-input)'
-    }
-  }
+  const handleFocus = () => {}
+  const handleBlur = (_e: React.FocusEvent) => {}
 
   return (
     <div
@@ -72,11 +63,12 @@ export default function ChatInput({
           style={{
             background: 'var(--bg-input)',
             borderRadius: '16px',
-            border: 'none',
-            boxShadow: 'var(--shadow-input)',
+            border: '0',
+            borderWidth: 0,
+            outline: 'none',
+            boxShadow: 'none',
             padding: '10px 14px 10px 20px',
             gap: '8px',
-            transition: 'border-color 0.2s, box-shadow 0.2s',
           }}
           onFocus={handleFocus}
           onBlur={handleBlur}

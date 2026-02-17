@@ -117,8 +117,10 @@ export default function WelcomeScreen({
           style={{
             background: 'var(--bg-input)',
             borderRadius: '16px',
-            border: 'none',
-            boxShadow: 'var(--shadow-input)',
+            border: '0',
+            borderWidth: 0,
+            outline: 'none',
+            boxShadow: 'none',
             padding: '10px 14px 10px 20px',
             gap: '8px',
           }}
