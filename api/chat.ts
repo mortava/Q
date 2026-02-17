@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
     : 'https://api.groq.com/openai/v1/chat/completions'
 
   const apiKey = useThesys ? thesysKey : groqKey
-  const model = useThesys ? 'c1-nightly' : 'llama-3.3-70b-versatile'
+  const model = useThesys ? 'c1/anthropic/claude-sonnet-4/v-20251230' : 'llama-3.3-70b-versatile'
 
   if (!apiKey) {
     return res.status(500).json({ error: 'API key not configured' })
