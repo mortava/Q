@@ -9,9 +9,20 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: 'messages array required' })
   }
 
-  const apiKey = process.env.GROQ_API_KEY
+  // Use Thesys C1 API for generative UI, fall back to Groq
+  const thesysKey = process.env.THESYS_API_KEY
+  const groqKey = process.env.GROQ_API_KEY
+  const useThesys = !!thesysKey
+
+  const apiUrl = useThesys
+    ? 'https://api.thesys.dev/v1/embed/chat/completions'
+    : 'https://api.groq.com/openai/v1/chat/completions'
+
+  const apiKey = useThesys ? thesysKey : groqKey
+  const model = useThesys ? 'c1-nightly' : 'llama-3.3-70b-versatile'
+
   if (!apiKey) {
-    return res.status(500).json({ error: 'GROQ_API_KEY not configured' })
+    return res.status(500).json({ error: 'API key not configured' })
   }
 
   const chatMessages = [
@@ -23,32 +34,29 @@ export default async function handler(req: any, res: any) {
   ]
 
   try {
-    const response = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: chatMessages,
-          stream: true,
-          temperature: 0.7,
-          max_tokens: 4096,
-        }),
-      }
-    )
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages: chatMessages,
+        stream: true,
+        temperature: 0.7,
+        max_tokens: 4096,
+      }),
+    })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Groq API error:', response.status, errorText)
-      return res.status(response.status).json({ error: `Groq API error: ${response.status}` })
+      console.error(`${useThesys ? 'Thesys C1' : 'Groq'} API error:`, response.status, errorText)
+      return res.status(response.status).json({ error: `API error: ${response.status}` })
     }
 
     res.setHeader('Content-Type', 'text/event-stream')
-    res.setHeader('Cache-Control', 'no-cache')
+    res.setHeader('Cache-Control', 'no-cache, no-transform')
     res.setHeader('Connection', 'keep-alive')
 
     const reader = response.body?.getReader()

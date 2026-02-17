@@ -1,6 +1,7 @@
 import { Copy, Check } from 'lucide-react'
 import { useState } from 'react'
 import type { Message } from '../lib/store'
+import { C1Component } from '@thesysai/genui-sdk'
 import MarkdownRenderer from './MarkdownRenderer'
 
 interface ChatMessageProps {
@@ -11,6 +12,7 @@ interface ChatMessageProps {
 export default function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const [c1Error, setC1Error] = useState(false)
   const isUser = message.role === 'user'
 
   const handleCopy = async () => {
@@ -44,7 +46,6 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
   if (isStreaming && !message.content) {
     return (
       <div className="flex items-start message-enter" style={{ gap: '12px', marginBottom: '24px' }}>
-        {/* Q Avatar — transparent, just letter */}
         <div
           className="flex items-center justify-center shrink-0"
           style={{
@@ -83,6 +84,27 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
     )
   }
 
+  // Render content — try C1Component for generative UI, fallback to Markdown
+  const renderContent = () => {
+    if (c1Error) {
+      return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
+    }
+
+    try {
+      return (
+        <div className="c1-response-wrapper">
+          <C1Component
+            c1Response={message.content}
+            isStreaming={isStreaming ?? false}
+          />
+        </div>
+      )
+    } catch {
+      setC1Error(true)
+      return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
+    }
+  }
+
   return (
     <div
       className="flex items-start message-enter"
@@ -113,7 +135,7 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
       {/* Message — flat, no card */}
       <div className="flex-1 min-w-0 relative" style={{ maxWidth: 'calc(100% - 48px)' }}>
         <div style={{ padding: '4px 0' }}>
-          <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
+          {renderContent()}
         </div>
 
         {/* Copy button */}

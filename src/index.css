@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@crayonai/react-ui/styles/index.css';
 @import '@fontsource/geist-sans/400.css';
 @import '@fontsource/geist-sans/500.css';
 @import '@fontsource/geist-sans/600.css';
@@ -502,6 +503,30 @@ button, a, input, textarea {
 }
 .quick-link:hover {
   background: var(--sidebar-hover);
+}
+
+/* === C1 GENERATIVE UI === */
+.c1-response-wrapper {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--chat-assistant-text);
+}
+
+.c1-response-wrapper * {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* Ensure C1 tables don't overflow on mobile */
+.c1-response-wrapper table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .c1-response-wrapper {
+  color: var(--chat-assistant-text);
 }
 
 /* === LLM INPUT BUBBLE === */
