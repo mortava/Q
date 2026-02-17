@@ -503,3 +503,30 @@ button, a, input, textarea {
 .quick-link:hover {
   background: var(--sidebar-hover);
 }
+
+/* === LLM INPUT BUBBLE === */
+.llm-bubble {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 24px !important;
+  padding: 12px 14px 12px 22px !important;
+}
+
+[data-theme="dark"] .llm-bubble {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .llm-bubble {
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+}
+
+.llm-bubble textarea {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

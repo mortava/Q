@@ -59,17 +59,8 @@ export default function ChatInput({
       <div style={{ maxWidth: '680px', margin: '0 auto' }}>
         <div
           ref={wrapperRef}
-          className="flex items-end"
-          style={{
-            background: 'var(--bg-input)',
-            borderRadius: '16px',
-            border: '0',
-            borderWidth: 0,
-            outline: 'none',
-            boxShadow: 'none',
-            padding: '10px 14px 10px 20px',
-            gap: '8px',
-          }}
+          className="flex items-end llm-bubble"
+          style={{ gap: '8px' }}
           onFocus={handleFocus}
           onBlur={handleBlur}
         >
