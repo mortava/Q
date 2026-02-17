@@ -14,7 +14,7 @@ interface SidebarProps {
 
 const quickLinks = [
   { label: 'AI Bank Statement Review', url: 'https://tqlpartner.totalqualitylending.com' },
-  { label: 'Quick Price', url: 'https://tqlpartner.totalqualitylending.com/eligibility-and-price-a-loan' },
+  { label: 'Quick Price', url: 'https://ob-pricing-app-1094393703267.us-central1.run.app/' },
   { label: 'Submit Loan Now', url: 'https://tqlpartner.totalqualitylending.com' },
   { label: 'Order Appraisal', url: 'https://tqlpartner.totalqualitylending.com' },
   { label: 'Get Approved', url: 'https://tqlpartner.totalqualitylending.com' },
