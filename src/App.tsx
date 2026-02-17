@@ -312,48 +312,50 @@ export default function App() {
 
         {/* Chat Area */}
         {!activeConversation || activeConversation.messages.length === 0 ? (
-          <div
-            className="flex-1 flex flex-col"
-            style={{ background: 'var(--bg-chat)' }}
-          >
-            <WelcomeScreen onPromptClick={handlePromptClick} />
-          </div>
+          <WelcomeScreen
+            onPromptClick={handlePromptClick}
+            inputValue={input}
+            onInputChange={setInput}
+            onSend={() => handleSend()}
+          />
         ) : (
-          <div
-            className="flex-1 overflow-y-auto chat-scroll"
-            style={{
-              background: 'var(--bg-chat)',
-              scrollBehavior: 'smooth',
-            }}
-          >
+          <>
             <div
-              className="mx-auto"
-              style={{ maxWidth: '720px', padding: '32px 24px 24px' }}
+              className="flex-1 overflow-y-auto chat-scroll"
+              style={{
+                background: 'var(--bg-chat)',
+                scrollBehavior: 'smooth',
+              }}
             >
-              {activeConversation.messages.map((msg, i) => (
-                <ChatMessage
-                  key={msg.id}
-                  message={msg}
-                  isStreaming={
-                    isStreaming &&
-                    i === activeConversation.messages.length - 1 &&
-                    msg.role === 'assistant'
-                  }
-                />
-              ))}
-              <div ref={messagesEndRef} />
+              <div
+                className="mx-auto"
+                style={{ maxWidth: '720px', padding: '32px 24px 24px' }}
+              >
+                {activeConversation.messages.map((msg, i) => (
+                  <ChatMessage
+                    key={msg.id}
+                    message={msg}
+                    isStreaming={
+                      isStreaming &&
+                      i === activeConversation.messages.length - 1 &&
+                      msg.role === 'assistant'
+                    }
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
-          </div>
-        )}
 
-        <ChatInput
-          value={input}
-          onChange={setInput}
-          onSend={() => handleSend()}
-          onStop={handleStop}
-          isStreaming={isStreaming}
-          disabled={false}
-        />
+            <ChatInput
+              value={input}
+              onChange={setInput}
+              onSend={() => handleSend()}
+              onStop={handleStop}
+              isStreaming={isStreaming}
+              disabled={false}
+            />
+          </>
+        )}
       </div>
     </div>
   )

@@ -46,14 +46,12 @@ export default function ChatInput({
 
   const handleFocus = () => {
     if (wrapperRef.current) {
-      wrapperRef.current.style.borderColor = 'var(--foreground)'
       wrapperRef.current.style.boxShadow = 'var(--shadow-input-focus)'
     }
   }
 
   const handleBlur = (e: React.FocusEvent) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.relatedTarget as Node)) {
-      wrapperRef.current.style.borderColor = 'var(--border-interactive)'
       wrapperRef.current.style.boxShadow = 'var(--shadow-input)'
     }
   }
@@ -74,7 +72,7 @@ export default function ChatInput({
           style={{
             background: 'var(--bg-input)',
             borderRadius: '16px',
-            border: '1px solid var(--border-interactive)',
+            border: 'none',
             boxShadow: 'var(--shadow-input)',
             padding: '10px 14px 10px 20px',
             gap: '8px',
