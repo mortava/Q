@@ -509,6 +509,7 @@ button, a, input, textarea {
   background: rgba(0, 0, 0, 0.04) !important;
   border: none !important;
   border-width: 0 !important;
+  border-style: none !important;
   outline: none !important;
   box-shadow: none !important;
   border-radius: 24px !important;
@@ -525,8 +526,18 @@ button, a, input, textarea {
   }
 }
 
-.llm-bubble textarea {
+.llm-bubble textarea,
+.llm-bubble textarea:focus,
+.llm-bubble textarea:focus-visible,
+.llm-bubble textarea:active {
   border: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.llm-bubble:focus-within {
   outline: none !important;
   box-shadow: none !important;
 }
