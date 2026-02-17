@@ -209,7 +209,7 @@ export default function App() {
             </span>
           </div>
           <div className="ml-auto text-xs text-slate-400">
-            Cerebras llama-3.3-70b
+            Groq llama-3.3-70b
           </div>
         </div>
 

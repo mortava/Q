@@ -9,9 +9,9 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: 'messages array required' })
   }
 
-  const apiKey = process.env.CEREBRAS_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    return res.status(500).json({ error: 'CEREBRAS_API_KEY not configured' })
+    return res.status(500).json({ error: 'GROQ_API_KEY not configured' })
   }
 
   const chatMessages = [
@@ -24,7 +24,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     const response = await fetch(
-      'https://api.cerebras.ai/v1/chat/completions',
+      'https://api.groq.com/openai/v1/chat/completions',
       {
         method: 'POST',
         headers: {
@@ -32,7 +32,7 @@ export default async function handler(req: any, res: any) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b',
+          model: 'llama-3.3-70b-versatile',
           messages: chatMessages,
           stream: true,
           temperature: 0.7,
@@ -43,8 +43,8 @@ export default async function handler(req: any, res: any) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Cerebras API error:', response.status, errorText)
-      return res.status(response.status).json({ error: `Cerebras API error: ${response.status}` })
+      console.error('Groq API error:', response.status, errorText)
+      return res.status(response.status).json({ error: `Groq API error: ${response.status}` })
     }
 
     res.setHeader('Content-Type', 'text/event-stream')
