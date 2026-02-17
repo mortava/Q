@@ -280,7 +280,7 @@ export default function App() {
                 padding: '4px 12px',
               }}
             >
-              C1 Generative UI
+              Groq Llama 3.3 70B
             </div>
           </div>
         </div>

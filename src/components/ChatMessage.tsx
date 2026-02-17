@@ -1,32 +1,16 @@
 import { Copy, Check } from 'lucide-react'
-import { useState, lazy, Suspense } from 'react'
+import { useState } from 'react'
 import type { Message } from '../lib/store'
 import MarkdownRenderer from './MarkdownRenderer'
-
-// Lazy-load C1Component so it doesn't crash the whole app if it fails
-const C1Component = lazy(() =>
-  import('@thesysai/genui-sdk').then((mod) => ({ default: mod.C1Component }))
-)
 
 interface ChatMessageProps {
   message: Message
   isStreaming?: boolean
 }
 
-function C1Wrapper({ content, isStreaming }: { content: string; isStreaming: boolean }) {
-  return (
-    <div className="c1-response-wrapper">
-      <Suspense fallback={<MarkdownRenderer content={content} isStreaming={isStreaming} />}>
-        <C1Component c1Response={content} isStreaming={isStreaming} />
-      </Suspense>
-    </div>
-  )
-}
-
 export default function ChatMessage({ message, isStreaming }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
   const [hovered, setHovered] = useState(false)
-  const [useMarkdown, setUseMarkdown] = useState(false)
   const isUser = message.role === 'user'
 
   const handleCopy = async () => {
@@ -89,18 +73,6 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
     )
   }
 
-  const renderContent = () => {
-    if (useMarkdown) {
-      return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
-    }
-    try {
-      return <C1Wrapper content={message.content} isStreaming={isStreaming ?? false} />
-    } catch {
-      setUseMarkdown(true)
-      return <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
-    }
-  }
-
   return (
     <div
       className="flex items-start message-enter"
@@ -126,7 +98,7 @@ export default function ChatMessage({ message, isStreaming }: ChatMessageProps) 
 
       <div className="flex-1 min-w-0 relative" style={{ maxWidth: 'calc(100% - 48px)' }}>
         <div style={{ padding: '4px 0' }}>
-          {renderContent()}
+          <MarkdownRenderer content={message.content} isStreaming={isStreaming} />
         </div>
 
         {!isStreaming && message.content && (

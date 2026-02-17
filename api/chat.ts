@@ -9,17 +9,9 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: 'messages array required' })
   }
 
-  // Use Thesys C1 API for generative UI, fall back to Groq
-  const thesysKey = process.env.THESYS_API_KEY
-  const groqKey = process.env.GROQ_API_KEY
-  const useThesys = !!thesysKey
-
-  const apiUrl = useThesys
-    ? 'https://api.thesys.dev/v1/embed/chat/completions'
-    : 'https://api.groq.com/openai/v1/chat/completions'
-
-  const apiKey = useThesys ? thesysKey : groqKey
-  const model = useThesys ? 'c1/anthropic/claude-sonnet-4/v-20251230' : 'llama-3.3-70b-versatile'
+  const apiKey = process.env.GROQ_API_KEY
+  const apiUrl = 'https://api.groq.com/openai/v1/chat/completions'
+  const model = 'llama-3.3-70b-versatile'
 
   if (!apiKey) {
     return res.status(500).json({ error: 'API key not configured' })
@@ -51,8 +43,8 @@ export default async function handler(req: any, res: any) {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error(`${useThesys ? 'Thesys C1' : 'Groq'} API error:`, response.status, errorText)
-      return res.status(response.status).json({ error: `API error: ${response.status}` })
+      console.error('Groq API error:', response.status, errorText)
+      return res.status(response.status).json({ error: `Groq API error: ${response.status}` })
     }
 
     res.setHeader('Content-Type', 'text/event-stream')
