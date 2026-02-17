@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { Menu, Zap } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Menu, Sun, Monitor, Moon } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import WelcomeScreen from './components/WelcomeScreen'
 import ChatMessage from './components/ChatMessage'
@@ -14,18 +14,44 @@ import {
 } from './lib/store'
 import { streamChat } from './lib/api'
 
+type Theme = 'light' | 'system' | 'dark'
+
+function getInitialTheme(): Theme {
+  const stored = localStorage.getItem('q-theme')
+  if (stored === 'light' || stored === 'dark' || stored === 'system') return stored
+  return 'system'
+}
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement
+  if (theme === 'light') {
+    root.setAttribute('data-theme', 'light')
+  } else if (theme === 'dark') {
+    root.setAttribute('data-theme', 'dark')
+  } else {
+    root.removeAttribute('data-theme')
+  }
+}
+
 export default function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   const abortRef = useRef<AbortController | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const streamContentRef = useRef('')
 
   const activeConversation = conversations.find((c) => c.id === activeId) || null
+
+  // Theme management
+  useEffect(() => {
+    applyTheme(theme)
+    localStorage.setItem('q-theme', theme)
+  }, [theme])
 
   useEffect(() => {
     const loaded = loadConversations()
@@ -164,7 +190,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex" style={{ background: 'var(--background)' }}>
       <Sidebar
         conversations={conversations}
         activeId={activeId}
@@ -176,19 +202,17 @@ export default function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full">
-        {/* Header Bar — frosted glass */}
+        {/* Header */}
         <div
           className="flex items-center shrink-0"
           style={{
             height: '52px',
             padding: '0 20px',
-            background: 'rgba(250, 250, 250, 0.82)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            borderBottom: '1px solid var(--border-light)',
+            background: 'var(--background)',
+            borderBottom: '1px solid var(--border)',
           }}
         >
-          {/* Sidebar toggle (visible when sidebar is closed) */}
+          {/* Sidebar toggle */}
           {!sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(true)}
@@ -198,6 +222,8 @@ export default function App() {
                 height: '34px',
                 borderRadius: 'var(--radius-sm)',
                 color: 'var(--text-secondary)',
+                background: 'transparent',
+                border: 'none',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'var(--bg-hover)'
@@ -213,62 +239,75 @@ export default function App() {
             </button>
           )}
 
-          {/* Q avatar + title */}
+          {/* Q text + title */}
           <div className="flex items-center gap-2.5">
-            <div
-              className="flex items-center justify-center text-white font-bold"
+            <span
               style={{
-                width: '28px',
-                height: '28px',
-                fontSize: '11px',
-                background: 'linear-gradient(135deg, #0071E3 0%, #4682B4 100%)',
-                borderRadius: 'var(--radius-sm)',
-                boxShadow: '0 0 0 1px rgba(0,0,0,0.04)',
+                fontFamily: 'var(--font-poppins)',
+                fontSize: '22px',
+                fontWeight: 600,
+                color: 'var(--foreground)',
               }}
             >
               Q
-            </div>
-            <span
-              className="truncate"
-              style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                letterSpacing: '-0.01em',
-                maxWidth: '300px',
-              }}
-            >
-              {activeConversation?.title || 'Q'}
             </span>
+            {activeConversation?.title && activeConversation.title !== 'New Chat' && (
+              <span
+                className="truncate"
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: 'var(--text-secondary)',
+                  maxWidth: '300px',
+                }}
+              >
+                {activeConversation.title}
+              </span>
+            )}
           </div>
 
           {/* Model badge */}
-          <div className="ml-auto">
+          <div className="ml-auto mr-28">
             <div
               className="flex items-center gap-1.5 cursor-default"
               style={{
-                fontSize: '11px',
+                fontSize: '12px',
                 fontWeight: 500,
                 color: 'var(--text-tertiary)',
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius-full)',
-                padding: '3px 10px 3px 8px',
-                letterSpacing: '-0.01em',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-strong)'
-                e.currentTarget.style.color = 'var(--text-secondary)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border)'
-                e.currentTarget.style.color = 'var(--text-tertiary)'
+                padding: '4px 12px',
               }}
             >
-              <Zap size={12} style={{ color: 'var(--tql-gold)' }} />
-              <span>Groq Llama 3.3 70B</span>
+              Groq Llama 3.3 70B
             </div>
           </div>
+        </div>
+
+        {/* Theme Switcher — fixed top-right */}
+        <div className="theme-switcher">
+          <button
+            className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
+            onClick={() => setTheme('light')}
+            title="Light mode"
+          >
+            <Sun size={16} />
+          </button>
+          <button
+            className={`theme-btn ${theme === 'system' ? 'active' : ''}`}
+            onClick={() => setTheme('system')}
+            title="System preference"
+          >
+            <Monitor size={16} />
+          </button>
+          <button
+            className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
+            onClick={() => setTheme('dark')}
+            title="Dark mode"
+          >
+            <Moon size={16} />
+          </button>
         </div>
 
         {/* Chat Area */}
@@ -281,7 +320,7 @@ export default function App() {
           </div>
         ) : (
           <div
-            className="flex-1 overflow-y-auto chat-scroll chat-fade-top"
+            className="flex-1 overflow-y-auto chat-scroll"
             style={{
               background: 'var(--bg-chat)',
               scrollBehavior: 'smooth',

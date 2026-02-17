@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.24",
+    "@fontsource/geist-mono": "^5.2.7",
+    "@fontsource/geist-sans": "^5.2.5",
     "@tailwindcss/vite": "^4.1.18",
     "ai": "^6.0.86",
     "clsx": "^2.1.1",

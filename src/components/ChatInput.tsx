@@ -46,39 +46,39 @@ export default function ChatInput({
 
   const handleFocus = () => {
     if (wrapperRef.current) {
-      wrapperRef.current.style.borderColor = 'var(--tql-blue)'
+      wrapperRef.current.style.borderColor = 'var(--foreground)'
       wrapperRef.current.style.boxShadow = 'var(--shadow-input-focus)'
     }
   }
 
   const handleBlur = (e: React.FocusEvent) => {
     if (wrapperRef.current && !wrapperRef.current.contains(e.relatedTarget as Node)) {
-      wrapperRef.current.style.borderColor = 'var(--border)'
+      wrapperRef.current.style.borderColor = 'var(--border-interactive)'
       wrapperRef.current.style.boxShadow = 'var(--shadow-input)'
     }
   }
 
   return (
     <div
-      className="shrink-0 relative input-fade"
+      className="shrink-0 relative"
       style={{
-        background: 'var(--bg-primary)',
-        borderTop: '1px solid var(--border-light)',
+        background: 'var(--background)',
+        borderTop: '1px solid var(--border)',
         padding: '16px 24px 20px',
       }}
     >
-      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
         <div
           ref={wrapperRef}
           className="flex items-end"
           style={{
             background: 'var(--bg-input)',
-            borderRadius: 'var(--radius-xl)',
-            border: '1.5px solid var(--border)',
+            borderRadius: '16px',
+            border: '1px solid var(--border-interactive)',
             boxShadow: 'var(--shadow-input)',
             padding: '10px 14px 10px 20px',
             gap: '8px',
-            transition: 'border-color var(--duration-fast), box-shadow var(--duration-fast)',
+            transition: 'border-color 0.2s, box-shadow 0.2s',
           }}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -96,10 +96,9 @@ export default function ChatInput({
             rows={1}
             className="flex-1 bg-transparent outline-none resize-none"
             style={{
-              fontSize: '14.5px',
+              fontSize: '15px',
               lineHeight: '1.5',
               color: 'var(--text-primary)',
-              letterSpacing: '-0.006em',
               fontFamily: 'var(--font-sans)',
               minHeight: '24px',
               maxHeight: '180px',
@@ -110,11 +109,13 @@ export default function ChatInput({
               onClick={onStop}
               className="shrink-0 flex items-center justify-center cursor-pointer"
               style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: 'var(--radius-full)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
                 background: '#ef4444',
-                transition: 'background var(--duration-base) var(--ease-out), transform var(--duration-fast)',
+                border: 'none',
+                color: 'white',
+                transition: 'background 0.15s, transform 0.1s',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#dc2626'
@@ -126,7 +127,7 @@ export default function ChatInput({
               }}
               title="Stop generating"
             >
-              <Square size={14} className="text-white" fill="white" />
+              <Square size={14} fill="white" />
             </button>
           ) : (
             <button
@@ -134,27 +135,28 @@ export default function ChatInput({
               disabled={!hasText || disabled}
               className="shrink-0 flex items-center justify-center disabled:cursor-not-allowed"
               style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: 'var(--radius-full)',
-                background: hasText ? 'var(--tql-blue)' : 'var(--bg-secondary)',
-                color: hasText ? 'var(--text-on-blue)' : 'var(--text-quaternary)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                border: 'none',
+                background: hasText ? 'var(--interactive-accent)' : 'var(--bg-secondary)',
+                color: hasText ? 'var(--background)' : 'var(--text-quaternary)',
                 cursor: hasText ? 'pointer' : 'default',
-                transition: 'background var(--duration-base) var(--ease-out), color var(--duration-base), transform var(--duration-fast)',
+                transition: 'background 0.15s, color 0.15s, transform 0.1s',
               }}
               onMouseEnter={(e) => {
                 if (hasText) {
-                  e.currentTarget.style.background = 'var(--tql-blue-hover)'
+                  e.currentTarget.style.background = 'var(--interactive-accent-hover)'
                   e.currentTarget.style.transform = 'scale(1.04)'
                 }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = hasText ? 'var(--tql-blue)' : 'var(--bg-secondary)'
+                e.currentTarget.style.background = hasText ? 'var(--interactive-accent)' : 'var(--bg-secondary)'
                 e.currentTarget.style.transform = 'scale(1)'
               }}
               title="Send message"
             >
-              <ArrowUp size={16} strokeWidth={2} />
+              <ArrowUp size={18} strokeWidth={2} />
             </button>
           )}
         </div>
@@ -164,7 +166,6 @@ export default function ChatInput({
             marginTop: '10px',
             fontSize: '11px',
             color: 'var(--text-quaternary)',
-            letterSpacing: '0.005em',
           }}
         >
           Q is an AI assistant. Verify important guideline details with your TQL Account Executive.

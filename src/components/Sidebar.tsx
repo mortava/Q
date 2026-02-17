@@ -1,4 +1,4 @@
-import { Plus, MessageSquare, Trash2, ChevronLeft, Settings } from 'lucide-react'
+import { Plus, MessageSquare, Trash2, ChevronLeft, ExternalLink } from 'lucide-react'
 import { useEffect } from 'react'
 import type { Conversation } from '../lib/store'
 
@@ -11,6 +11,15 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void
   onDeleteConversation: (id: string) => void
 }
+
+const quickLinks = [
+  { label: 'AI Bank Statement Review', url: 'https://tqlpartner.totalqualitylending.com' },
+  { label: 'Quick Price', url: 'https://tqlpartner.totalqualitylending.com/eligibility-and-price-a-loan' },
+  { label: 'Submit Loan Now', url: 'https://tqlpartner.totalqualitylending.com' },
+  { label: 'Order Appraisal', url: 'https://tqlpartner.totalqualitylending.com' },
+  { label: 'Get Approved', url: 'https://tqlpartner.totalqualitylending.com' },
+  { label: 'GET HELP', url: 'https://tqlpartner.totalqualitylending.com' },
+]
 
 export default function Sidebar({
   conversations,
@@ -68,54 +77,43 @@ export default function Sidebar({
         className="w-[280px] h-full flex flex-col shrink-0 z-50 fixed md:relative"
         style={{
           backgroundColor: 'var(--sidebar-bg)',
+          borderRight: '1px solid var(--sidebar-divider)',
           willChange: 'transform',
         }}
       >
-        {/* Logo Area */}
+        {/* Header — Q branding + close button */}
         <div
           className="flex items-center justify-between"
           style={{
-            height: '60px',
-            padding: '16px 16px 12px 16px',
+            height: '52px',
+            padding: '0 16px',
           }}
         >
-          <div className="flex items-center gap-2.5">
-            <div
-              className="flex items-center justify-center text-white font-bold"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #0071E3 0%, #4682B4 100%)',
-                fontSize: '13px',
-              }}
-            >
-              Q
-            </div>
-            <span
-              className="text-white"
-              style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                letterSpacing: '-0.02em',
-              }}
-            >
-              Q Agent
-            </span>
-          </div>
+          <span
+            style={{
+              fontFamily: 'var(--font-poppins)',
+              fontSize: '20px',
+              fontWeight: 600,
+              color: 'var(--foreground)',
+            }}
+          >
+            Q
+          </span>
           <button
             onClick={onToggle}
             className="flex items-center justify-center cursor-pointer"
             style={{
-              width: '20px',
-              height: '20px',
-              borderRadius: 'var(--radius-xs)',
+              width: '32px',
+              height: '32px',
+              borderRadius: 'var(--radius-sm)',
               color: 'var(--sidebar-text)',
-              transition: 'background var(--duration-fast) var(--ease-in-out), color var(--duration-fast)',
+              background: 'transparent',
+              border: 'none',
+              transition: 'background 0.15s, color 0.15s',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--sidebar-hover)'
-              e.currentTarget.style.color = 'var(--sidebar-text-hover)'
+              e.currentTarget.style.color = 'var(--foreground)'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
@@ -128,7 +126,7 @@ export default function Sidebar({
         </div>
 
         {/* New Chat Button */}
-        <div style={{ padding: '0 16px', marginBottom: '16px' }}>
+        <div style={{ padding: '0 12px', marginBottom: '12px' }}>
           <button
             onClick={onNewChat}
             className="w-full flex items-center justify-center cursor-pointer"
@@ -136,26 +134,23 @@ export default function Sidebar({
               height: '40px',
               background: 'transparent',
               border: '1px solid var(--sidebar-divider)',
-              borderRadius: 'var(--radius-sm)',
-              color: 'var(--sidebar-text-hover)',
-              fontSize: '13px',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--foreground)',
+              fontFamily: 'var(--font-poppins)',
+              fontSize: '14px',
               fontWeight: 500,
               gap: '8px',
-              transition: 'background var(--duration-fast) var(--ease-in-out), border-color var(--duration-fast), color var(--duration-fast)',
+              transition: 'background 0.15s',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--sidebar-hover)'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-              e.currentTarget.style.color = 'white'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.borderColor = 'var(--sidebar-divider)'
-              e.currentTarget.style.color = 'var(--sidebar-text-hover)'
             }}
           >
             <Plus size={14} />
-            New Chat
+            Start a Fresh Qual +
           </button>
         </div>
 
@@ -164,7 +159,7 @@ export default function Sidebar({
           style={{
             height: '1px',
             background: 'var(--sidebar-divider)',
-            margin: '0 16px 12px 16px',
+            margin: '0 12px 8px 12px',
           }}
         />
 
@@ -195,16 +190,16 @@ export default function Sidebar({
                       margin: '1px 8px',
                       borderRadius: 'var(--radius-sm)',
                       fontSize: '13px',
-                      color: isActive ? 'white' : 'var(--sidebar-text-hover)',
+                      color: isActive ? 'var(--foreground)' : 'var(--sidebar-text-hover)',
                       background: isActive ? 'var(--sidebar-active)' : 'transparent',
-                      borderLeft: isActive ? '2px solid var(--sidebar-active-border)' : '2px solid transparent',
-                      transition: 'background var(--duration-fast) var(--ease-in-out), color var(--duration-fast)',
+                      fontWeight: isActive ? 500 : 400,
+                      transition: 'background 0.15s, color 0.15s',
                     }}
                     onClick={() => onSelectConversation(c.id)}
                     onMouseEnter={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.background = 'var(--sidebar-hover)'
-                        e.currentTarget.style.color = 'white'
+                        e.currentTarget.style.color = 'var(--foreground)'
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -230,10 +225,12 @@ export default function Sidebar({
                         padding: '4px',
                         borderRadius: 'var(--radius-xs)',
                         color: 'var(--sidebar-text)',
-                        transition: 'opacity var(--duration-fast), color var(--duration-fast)',
+                        background: 'transparent',
+                        border: 'none',
+                        transition: 'opacity 0.15s, color 0.15s',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#f87171'
+                        e.currentTarget.style.color = '#ef4444'
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.color = 'var(--sidebar-text)'
@@ -249,53 +246,48 @@ export default function Sidebar({
           ))}
         </div>
 
+        {/* Quick Links */}
+        <div className="quick-links-container">
+          <div className="quick-links-title">Quick Links</div>
+          {quickLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="quick-link"
+            >
+              <ExternalLink size={14} style={{ opacity: 0.5 }} />
+              {link.label}
+            </a>
+          ))}
+        </div>
+
         {/* Bottom Section */}
         <div
           style={{
             borderTop: '1px solid var(--sidebar-divider)',
+            padding: '12px 16px',
           }}
         >
-          <div style={{ padding: '12px 16px' }}>
-            <div
-              style={{
-                fontSize: '11px',
-                color: 'var(--sidebar-text)',
-                letterSpacing: '0.01em',
-              }}
-            >
-              Powered by Total Quality Lending
-            </div>
-            <div
-              style={{
-                fontSize: '10px',
-                color: 'var(--sidebar-text)',
-                opacity: 0.6,
-                marginTop: '2px',
-              }}
-            >
-              NMLS #1933377
-            </div>
-          </div>
-          <button
-            className="flex items-center justify-center cursor-pointer"
+          <div
             style={{
-              position: 'absolute',
-              bottom: '12px',
-              right: '16px',
-              padding: '8px',
+              fontSize: '11px',
               color: 'var(--sidebar-text)',
-              transition: 'color var(--duration-fast)',
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'white'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--sidebar-text)'
-            }}
-            title="Settings"
           >
-            <Settings size={16} />
-          </button>
+            Powered by Total Quality Lending
+          </div>
+          <div
+            style={{
+              fontSize: '10px',
+              color: 'var(--sidebar-text)',
+              opacity: 0.6,
+              marginTop: '2px',
+            }}
+          >
+            NMLS #1933377
+          </div>
         </div>
       </div>
     </>
