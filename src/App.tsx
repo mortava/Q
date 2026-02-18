@@ -266,23 +266,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Model badge */}
-          <div className="ml-auto mr-28">
-            <div
-              className="flex items-center gap-1.5 cursor-default"
-              style={{
-                fontSize: '12px',
-                fontWeight: 500,
-                color: 'var(--text-tertiary)',
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-full)',
-                padding: '4px 12px',
-              }}
-            >
-              Groq Llama 3.3 70B
-            </div>
-          </div>
         </div>
 
         {/* Theme Switcher — fixed top-right */}
